@@ -7,7 +7,7 @@ var app = new Vue ({
     methods:{
         findData: function () {
             $.get('/api/games', function (data) {
-                app.games = data;
+                app.games = data.games;
                 app.scoresPlayers(app.games);
             })
         },

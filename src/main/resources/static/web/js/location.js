@@ -15,7 +15,7 @@ var app = new Vue ({
         },
         findGameView : function () {
             $.get('/api/game_view/'+ app.getIdUrl, function (data) {
-                app.view = data;
+                app.view = data.games;
                 app.locatePlayer();
                 app.locateShip();
                 app.locateSalvoes();
