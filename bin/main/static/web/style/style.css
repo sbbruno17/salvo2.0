@@ -1,0 +1,9 @@
+body{
+background-image: url(../Img/battleshipfire.jpg)
+}
+
+h1{
+ font-size: 25px;
+ text-decoration: underline;
+ text-align: center;
+}
