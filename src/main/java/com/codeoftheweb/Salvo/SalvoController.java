@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -30,6 +31,9 @@ public class SalvoController {
 
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/games")
     public Map<String, Object> Games(Authentication authentication) {
@@ -55,7 +59,7 @@ public class SalvoController {
     }
 
 
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    @PostMapping("players")
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String username, @RequestParam String password) {
         if (username.isEmpty()||password.isEmpty()) {
             return new ResponseEntity<>(makeMap("error", "No name or password"), HttpStatus.FORBIDDEN);

@@ -1,9 +1,23 @@
 body{
-background-image: url(../Img/battleshipfire.jpg)
+background-color: black;
 }
-
 h1{
  font-size: 25px;
  text-decoration: underline;
  text-align: center;
+}
+
+.location{
+background-color: blue;
+}
+
+.salvoes {
+background-color: red;
+}
+.salvoes2{
+background-color: green
+}
+
+.table table-bordered table-dark{
+background-image: src= style/uss.jpg
 }
