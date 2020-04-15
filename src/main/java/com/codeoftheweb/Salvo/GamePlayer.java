@@ -93,6 +93,10 @@ public class GamePlayer {
         return salvoes;
     }
 
+    public Set<Ship> getShips() {
+        return ships;
+    }
+
 
     public void addShip(Ship ship) {
         ship.setGameplayer(this);

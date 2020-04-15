@@ -1,14 +1,37 @@
 body {
-    background-color: black;
-    background-image: url(/uss.jpg);
+    background-image: url(../uss.jpg) !important;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
-h1 {
-    font-size: 30px;
-    text-decoration: underline;
-    text-align: center;
+label {
+    color: black;
 }
+
+#scoreTable {
+    background-image: url(../f14.jpg);
+    text-decoration-color: rgb(107, 158, 19);
+}
+
+#avion {
+    width: 120px;
+    height: 120px;
+}
+
+#logo {
+    width: 50%;
+    height: 160px;
+    position: absolute;
+    margin-top: 10px;
+    right: 380px;
+}
+
 h2 {
+    text-decoration: underline;
+}
+
+h3 {
+    font-size: 20px;
     text-decoration: underline;
 }
 

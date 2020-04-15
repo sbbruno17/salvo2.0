@@ -55,7 +55,7 @@ public class Player {
     }
 
     public Score getScore(Game game){
-        return this.scores.stream().filter(p -> p.getGame().equals(game)).findFirst().orElse(null);
+        return this.scores.stream().filter(p -> p.getGame().getId()==game.getId()).findFirst().orElse(null);
     }
 
     public String getPassword() {

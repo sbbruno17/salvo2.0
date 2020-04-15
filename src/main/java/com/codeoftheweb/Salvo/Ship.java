@@ -51,4 +51,9 @@ public class Ship {
     public String getType() {
         return type;
     }
+
+    public List<String> getLocations() {
+        return locations;
+    }
 }
+
