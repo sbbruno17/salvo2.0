@@ -1,5 +1,5 @@
 body {
-    background-image: url(../uss.jpg) !important;
+    background-image: url(../Media/uss.jpg) !important;
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -9,7 +9,6 @@ label {
 }
 
 #scoreTable {
-    background-image: url(../f14.jpg);
     text-decoration-color: rgb(107, 158, 19);
 }
 
@@ -45,4 +44,87 @@ h3 {
 
 .salvoes2 {
     background-color: green
+}
+
+/*ACA PEGO EL SET UP DEL GRID DE NAVES */
+.grid-stack-item-content {
+    background-repeat: no-repeat;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    left: 0px !important;
+    right: 0px !important;
+}
+
+.submarineHorizontal {
+    background-image: url('submarinehor.png');
+    background-size: contain;
+}
+
+.carrierHorizontal {
+    background-image: url('carrierhor.png');
+    background-size: contain;
+}
+
+.patrolHorizontal {
+    background-image: url('patrolboathor.png');
+    background-size: contain;
+}
+
+.destroyerHorizontal {
+    background-image: url('destroyerhor.png');
+    background-size: contain;
+}
+
+.battleshipHorizontal {
+    background-image: url('battleshiphor.png');
+    background-size: cover;
+}
+
+.submarineVertical {
+    background-image: url('submarinever.png');
+    background-size: 100% 100%;
+    width: 40px !important;
+    left: 0px;
+}
+
+.carrierVertical {
+    background-image: url('carrierver.png');
+    background-size: 100% 100%;
+    width: 40px !important;
+    left: 0px;
+}
+
+.patrolVertical {
+    background-image: url('patrolboatver.png');
+    background-size: 100% 100%;
+    width: 40px !important;
+    left: 0px;
+}
+
+.destroyerVertical {
+    background-image: url('destroyerver.png');
+    background-size: 100% 100%;
+    width: 40px !important;
+    left: 0px;
+}
+
+.battleshipVertical {
+    background-image: url('battleshipver.png');
+    background-size: 100% 100%;
+    width: 40px !important;
+    left: 0px;
+}
+
+#grid {
+    height: 400px;
+
+}
+
+#grid-ships {
+    width: 400px;
+    height: 400px;
+    padding-left: 36px;
+    padding-top: 36px;
+    background-image: url(grid-bkg.png);
+    background-size: contain;
 }

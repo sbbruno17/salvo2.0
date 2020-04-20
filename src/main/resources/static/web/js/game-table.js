@@ -113,4 +113,3 @@ function signUp() {
 
 
 app.findData();
-app.addShips();
