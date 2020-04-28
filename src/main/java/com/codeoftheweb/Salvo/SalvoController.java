@@ -139,7 +139,25 @@ public class SalvoController {
         } else {
             ships.forEach(ship -> gameplayer.addShip(ship));
             gameplayerRepository.save(gameplayer);
-            return new ResponseEntity<>(makeMap("succes", "ships created succesfully"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("succes", "ships created succesfully"), HttpStatus.CREATED);
+        }
+    }
+    @PostMapping("/games/players/{gamePlayerId}/salvos")
+    public ResponseEntity<Map<String, Object>> addSalvo(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
+        GamePlayer gameplayer = gameplayerRepository.findById(gamePlayerId).orElse(null);
+        Player player = playerRepository.findByUserName(authentication.getName());
+        if (isGuest(authentication)) {
+            return new ResponseEntity<>(makeMap("error", "No player logged. Please Log in before entering any game"), HttpStatus.UNAUTHORIZED);
+        } else if (gameplayer == null) {
+            return new ResponseEntity<>(makeMap("error", "there is no game player with the given ID"), HttpStatus.NOT_FOUND);
+        } else if (gameplayer.getPlayer().getId() != player.getId()) {
+            return new ResponseEntity<>(makeMap("error", "this is not your game"), HttpStatus.UNAUTHORIZED);
+        } else if (gameplayer.getSalvoes().size() > 0) {
+            return new ResponseEntity<>(makeMap("error", "Salvo allready located"), HttpStatus.FORBIDDEN);
+        } else {
+             gameplayer.addSalvo(salvo);
+            gameplayerRepository.save(gameplayer);
+            return new ResponseEntity<>(makeMap("succes", "Salvo fired succesfully"), HttpStatus.CREATED);
         }
     }
 

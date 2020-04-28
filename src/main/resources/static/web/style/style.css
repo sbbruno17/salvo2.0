@@ -55,60 +55,60 @@ h3 {
     right: 0px !important;
 }
 
-.submarineHorizontal {
+.SubmarineHorizontal {
     background-image: url('submarinehor.png');
     background-size: contain;
 }
 
-.carrierHorizontal {
+.CarrierHorizontal {
     background-image: url('carrierhor.png');
     background-size: contain;
 }
 
-.patrolHorizontal {
+.PatrolBoatHorizontal {
     background-image: url('patrolboathor.png');
     background-size: contain;
 }
 
-.destroyerHorizontal {
+.DestroyerHorizontal {
     background-image: url('destroyerhor.png');
     background-size: contain;
 }
 
-.battleshipHorizontal {
+.BattleshipHorizontal {
     background-image: url('battleshiphor.png');
     background-size: cover;
 }
 
-.submarineVertical {
+.SubmarineVertical {
     background-image: url('submarinever.png');
     background-size: 100% 100%;
     width: 40px !important;
     left: 0px;
 }
 
-.carrierVertical {
+.CarrierVertical {
     background-image: url('carrierver.png');
     background-size: 100% 100%;
     width: 40px !important;
     left: 0px;
 }
 
-.patrolVertical {
+.PatrolBoatVertical {
     background-image: url('patrolboatver.png');
     background-size: 100% 100%;
     width: 40px !important;
     left: 0px;
 }
 
-.destroyerVertical {
+.DestroyerVertical {
     background-image: url('destroyerver.png');
     background-size: 100% 100%;
     width: 40px !important;
     left: 0px;
 }
 
-.battleshipVertical {
+.BattleshipVertical {
     background-image: url('battleshipver.png');
     background-size: 100% 100%;
     width: 40px !important;

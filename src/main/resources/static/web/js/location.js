@@ -19,12 +19,10 @@ var app = new Vue({
             $.get('/api/game_view/' + app.getIdUrl, function (data) {
                 app.view = data;
                 app.locatePlayer();
-                app.locateShip();
                 app.locateSalvoes();
-            })
-        },
-        locateShip: function () {
+                app.gridCreation();
 
+            })
         },
 
         locatePlayer: function () {
@@ -40,8 +38,8 @@ var app = new Vue({
             for (i = 0; i < app.view.salvoes.length; i++) {
                 for (j = 0; j < app.view.salvoes[i].locations.length; j++) {
                     if (app.mainPlayerMail.id == app.view.salvoes[i].playerId) {
-                        var elements = document.getElementById(app.view.salvoes[i].locations[j]);
-                        elements.classList.add('salvoes')
+                        // var elements = document.getElementById(app.view.salvoes[i].locations[j]);
+                        //elements.classList.add('salvoes')
                     } else {
                         var elements2 = document.getElementById(app.view.salvoes[i].locations[j] + "O");
                         elements2.classList.add('salvoes2');
@@ -59,94 +57,284 @@ var app = new Vue({
                     contentType: "application/json"
                 })
                 .done(function () {
-                    alart("Ships added Succesfully");
+                    alert("Ships added Succesfully");
                     location.reload();
                 })
                 .fail(function () {
                     alert("error");
                 })
         },
-    }
-})
-app.findGameView()
-
-//NEW GRILL
-
-const options = {
-    //grilla de 10 x 10
-    column: 10,
-    row: 10,
-    //separacion entre elementos (les llaman widgets)
-    verticalMargin: 0,
-    //altura de las celdas
-    disableOneColumnMode: true,
-    //altura de las filas/celdas
-    cellHeight: 36,
-    //necesario
-    float: true,
-    //desabilitando el resize de los widgets
-    disableResize: true,
-    //false permite mover los widgets, true impide
-    staticGrid: false
-}
-
-//iniciando la grilla en modo libe statidGridFalse
-const grid = GridStack.init(options, '#grid');
-
-//todas las funciones se encuentran en la documentación
-//https://github.com/gridstack/gridstack.js/tree/develop/doc
-
-//agregando elementos (widget) desde el javascript
-//elemento,x,y,width,height
-grid.addWidget('<div><div id="submarine" class="grid-stack-item-content submarineHorizontal"></div><div/>',
-    1, 1, 3, 1);
-
-grid.addWidget('<div><div id="carrier" class="grid-stack-item-content carrierVertical"></div><div/>',
-    9, 1, 1, 4);
-
-grid.addWidget('<div><div id="patrol" class="grid-stack-item-content patrolHorizontal"></div><div/>',
-    2, 4, 2, 1);
-
-grid.addWidget('<div><div id="destroyer" class="grid-stack-item-content destroyerVertical"></div><div/>',
-    6, 4, 1, 3);
-
-grid.addWidget('<div><div id="battleship" class="grid-stack-item-content battleshipHorizontal"></div><div/>',
-    2, 8, 5, 1);
-
-
-//rotacion de las naves
-//obteniendo los ships agregados en la grilla
-const ships = document.querySelectorAll("#submarine,#carrier,#patrol,#destroyer,#battleship");
-ships.forEach(ship => {
-    //asignando el evento de click a cada nave
-    ship.parentElement.onclick = function (event) {
-        //obteniendo el ship (widget) al que se le hace click
-        let itemContent = event.target;
-        //obteniendo valores del widget
-        let itemX = parseInt(itemContent.parentElement.dataset.gsX);
-        let itemY = parseInt(itemContent.parentElement.dataset.gsY);
-        let itemWidth = parseInt(itemContent.parentElement.dataset.gsWidth);
-        let itemHeight = parseInt(itemContent.parentElement.dataset.gsHeight);
-
-        //si esta horizontal se rota a vertical sino a horizontal
-        if (itemContent.classList.contains(itemContent.id + 'Horizontal')) {
-            //veiricando que existe espacio disponible para la rotacion
-            if (grid.isAreaEmpty(itemX, itemY + 1, itemHeight, itemWidth - 1) && (itemY + (itemWidth - 1) <= 9)) {
-                //la rotacion del widget es simplemente intercambiar el alto y ancho del widget, ademas se cambia la clase
-                grid.resize(itemContent.parentElement, itemHeight, itemWidth);
-                itemContent.classList.remove(itemContent.id + 'Horizontal');
-                itemContent.classList.add(itemContent.id + 'Vertical');
-            } else {
-                alert("Espacio no disponible");
+        gridCreation: function () {
+            const options = {
+                //grilla de 10 x 10
+                column: 10,
+                row: 10,
+                //separacion entre elementos (les llaman widgets)
+                verticalMargin: 0,
+                //altura de las celdas
+                disableOneColumnMode: true,
+                //altura de las filas/celdas
+                cellHeight: 36,
+                //necesario
+                float: true,
+                //desabilitando el resize de los widgets
+                disableResize: true,
+                //false permite mover los widgets, true impide
+                staticGrid: false,
+                animate: true,
             }
-        } else {
-            if (grid.isAreaEmpty(itemX + 1, itemY, itemHeight - 1, itemWidth) && (itemX + (itemHeight - 1) <= 9)) {
-                grid.resize(itemContent.parentElement, itemHeight, itemWidth);
-                itemContent.classList.remove(itemContent.id + 'Vertical');
-                itemContent.classList.add(itemContent.id + 'Horizontal');
+
+            //CREACION DE GRILLA Y WIDGETS (NAVES) CUANDO NO HAY SHIPS EN JUEGO
+
+            if (app.view.ships.length == 0) {
+                const grid = GridStack.init(options, '#grid');
+                grid.addWidget('<div><div id="Submarine" class="grid-stack-item-content SubmarineHorizontal"></div><div/>', {
+                        width: 3,
+                        heigth: 1,
+                        x: 0,
+                        y: 0,
+                        noResize: true,
+                        id: "Submarine"
+                    }),
+                    grid.addWidget('<div><div id="Carrier" class="grid-stack-item-content CarrierHorizontal"></div><div/>', {
+                        width: 5,
+                        heigth: 1,
+                        x: 0,
+                        y: 0,
+                        noResize: true,
+                        id: "Carrier"
+                    }),
+                    grid.addWidget('<div><div id="PatrolBoat" class="grid-stack-item-content PatrolBoatHorizontal"></div><div/>', {
+                        width: 2,
+                        heigth: 1,
+                        x: 0,
+                        y: 0,
+                        noResize: true,
+                        id: "PatrolBoat"
+                    }),
+                    grid.addWidget('<div><div id="Destroyer" class="grid-stack-item-content DestroyerHorizontal"></div><div/>', {
+                        width: 3,
+                        heigth: 1,
+                        x: 0,
+                        y: 0,
+                        noResize: true,
+                        id: "Destroyer"
+                    }),
+                    grid.addWidget('<div><div id="Battleship" class="grid-stack-item-content BattleshipHorizontal"></div><div/>', {
+                        width: 4,
+                        heigth: 1,
+                        x: 0,
+                        y: 0,
+                        noResize: true,
+                        id: "Battleship"
+                    })
+
+                //CONFIGURACION DE LAS NAVES
+
+                $("#Carrier,#Battleship,#Submarine,#Destroyer,#PatrolBoat").click(function () {
+                    var idShip = $(this)[0].id;
+                    var widthShip = parseInt($(this)[0].dataset.gsWidth);
+                    var heigthShip = parseInt($(this)[0].dataset.gsHeight);
+                    var x = parseInt($(this)[0].dataset.gsX);
+                    var y = parseInt($(this)[0].dataset.gsY);
+                    var yShip = 10 - widthShip;
+                    var xShip = 10 - heigthShip;
+
+                    if ($(this).children().hasClass(idShip + "Horizontal") && y <= yShip && grid.isAreaEmpty(x, y + 1, heigthShip, widthShip)) {
+                        console.log(yShip)
+                        console.log("vertical")
+                        grid.resize($(this), heigthShip, widthShip);
+                        $(this).children().removeClass(idShip + "Horizontal");
+                        $(this).children().addClass(idShip + "Vertical");
+                    } else if ($(this).children().hasClass(idShip + "Vertical") && x <= xShip && grid.isAreaEmpty(x + 1, y, heigthShip, widthShip)) {
+                        console.log(xShip)
+                        console.log("horizontal")
+                        grid.resize($(this), heigthShip, widthShip);
+                        $(this).children().addClass(idShip + "Horizontal");
+                        $(this).children().removeClass(idShip + "Vertical");
+                    }
+                });
+
+                //rotacion de las naves
+                //obteniendo los ships agregados en la grilla
+                const ships = document.querySelectorAll("#Carrier,#Battleship,#Submarine,#Destroyer,#PatrolBoat");
+                ships.forEach(ship => {
+                    //asignando el evento de click a cada nave
+                    ship.parentElement.onclick = function (event) {
+                        //obteniendo el ship (widget) al que se le hace click
+                        let itemContent = event.target;
+                        //obteniendo valores del widget
+                        let itemX = parseInt(itemContent.parentElement.dataset.gsX);
+                        let itemY = parseInt(itemContent.parentElement.dataset.gsY);
+                        let itemWidth = parseInt(itemContent.parentElement.dataset.gsWidth);
+                        let itemHeight = parseInt(itemContent.parentElement.dataset.gsHeight);
+
+                        //si esta horizontal se rota a vertical sino a horizontal
+                        if (itemContent.classList.contains(itemContent.id + 'Horizontal')) {
+                            //veiricando que existe espacio disponible para la rotacion
+                            if (grid.isAreaEmpty(itemX, itemY + 1, itemHeight, itemWidth - 1) && (itemY + (itemWidth - 1) <= 9)) {
+                                //la rotacion del widget es simplemente intercambiar el alto y ancho del widget, ademas se cambia la clase
+                                grid.resize(itemContent.parentElement, itemHeight, itemWidth);
+                                itemContent.classList.remove(itemContent.id + 'Horizontal');
+                                itemContent.classList.add(itemContent.id + 'Vertical');
+                            } else {
+                                alert("Espacio no disponible");
+                            }
+                        } else {
+                            if (grid.isAreaEmpty(itemX + 1, itemY, itemHeight - 1, itemWidth) && (itemX + (itemHeight - 1) <= 9)) {
+                                grid.resize(itemContent.parentElement, itemHeight, itemWidth);
+                                itemContent.classList.remove(itemContent.id + 'Vertical');
+                                itemContent.classList.add(itemContent.id + 'Horizontal');
+                            } else {
+                                alert("Espacio no disponible");
+                            }
+                        }
+                    }
+                })
             } else {
-                alert("Espacio no disponible");
+                options.staticGrid = true;
+                const grid = GridStack.init(options, '#grid');
+                for (var i = 0; i < app.view.ships.length; i++) {
+
+                    var ship = app.view.ships[i];
+
+                    let xShip = parseInt(ship.locations[0].slice(1)) - 1;
+                    let yShip = parseInt(ship.locations[0].slice(0, 1).charCodeAt(0)) - 65;
+
+                    if (ship.locations[0][0] == ship.locations[1][0]) {
+
+                        widthShip = ship.locations.length;
+                        heigthShip = 1;
+
+                        grid.addWidget('<div id="' + ship.type + '"><div class="grid-stack-item-content' + " " + ship.type + 'Horizontal"></div></div>', {
+                            width: widthShip,
+                            heigth: heigthShip,
+                            x: xShip,
+                            y: yShip,
+                            noResize: true,
+                            id: ship.type
+                        })
+                    } else {
+                        widthShip = 1;
+                        heigthShip = ship.locations.length;
+
+                        grid.addWidget('<div id="' + ship.type + '"><div class="grid-stack-item-content' + " " + ship.type + 'Vertical"></div></div>', {
+                            width: widthShip,
+                            height: heigthShip,
+                            x: xShip,
+                            y: yShip,
+                            noResize: true,
+                            id: ship.type
+                        })
+                    }
+                }
             }
+        },
+        saveShips: function () {
+
+            $(".grid-stack-item").each(function () {
+                var coordinate = [];
+                var ship = {
+                    type: "",
+                    locations: ""
+                };
+                if ($(this).attr("data-gs-width") !== "1") {
+                    for (var i = 0; i < parseInt($(this).attr("data-gs-width")); i++) {
+                        coordinate.push(String.fromCharCode(parseInt($(this).attr("data-gs-y")) + 65) + (parseInt($(this).attr("data-gs-x")) + i + 1).toString());
+                    }
+                } else {
+                    for (var i = 0; i < parseInt($(this).attr("data-gs-height")); i++) {
+                        coordinate.push(String.fromCharCode(parseInt($(this).attr("data-gs-y")) + i + 65) + (parseInt($(this).attr("data-gs-x")) + 1).toString());
+                    }
+                }
+
+                ship.type = $(this).attr("data-gs-id");
+                ship.locations = coordinate;
+                app.shipLocation.push(ship);
+                console.log(coordinate);
+
+            });
+            app.addShips();
         }
     }
-})
+});
+
+function postSalvoes(turn, salvoLocations) {
+
+    if (app.salvo.salvoLocations.length == 5) {
+        var newSalvo = {
+            turn: turn,
+            salvoLocations: salvoLocations
+        };
+        $.post({
+            url: "/api/games/players/" + myParam + "/salvos",
+            data: JSON.stringify(newSalvo),
+            dataType: "text",
+            contentType: "application/json"
+        }).done(function () {
+            location.reload();
+
+
+
+        }).fail(function (jqXHR, error) {
+            mensajeError = JSON.parse(jqXHR.responseText);
+            Swal.fire(mensajeError.error);
+        })
+    } else {
+        Swal.fire('Complete the five shoots');
+    }
+}
+
+//Funcion para guardar los salvoLocations y verificar que no seleccione una celda que ya esta seleccionada 
+function guardarSalvoLocations(id) {
+
+    app.id = id;
+    if (app.salvo.salvoLocations.length < 5) {
+
+
+        if (app.salvo.salvoLocations.includes(id) == false) {
+
+            app.salvo.salvoLocations.push(id);
+            document.getElementById(id).classList.add("salvoesSelect");
+
+            app.salvoesPlayer.forEach(sp => {
+                app.idSalvoPlayer = sp.player;
+                sp.salvoLocations.forEach(eachSalvoLocation => {
+                    if (app.salvo.salvoLocations.includes(eachSalvoLocation)) {
+
+                        document.getElementById(id).classList.remove("salvoesSelect");
+                        quitarSalvoLocation(id)
+
+                        Swal.fire(
+                            'You already select this cell before',
+                            "Try another",
+                            'error'
+                        )
+
+                    }
+                })
+            })
+
+        } else {
+            document.getElementById(id).classList.remove("salvoesSelect");
+            quitarSalvoLocation(id);
+        }
+    } else if (app.salvo.salvoLocations.length == 5) {
+        document.getElementById(id).classList.remove("salvoesSelect");
+        quitarSalvoLocation(id);
+    }
+};
+
+//funcion para quitar un location por si el player se arrepiente de disparar en esa celda 
+
+function quitarSalvoLocation(id) {
+    var index = app.salvo.salvoLocations.indexOf(id);
+    if (index > -1) {
+        app.salvo.salvoLocations.splice(index, 1);
+    }
+}
+
+function salvoLocation() {
+    postSalvoes(app.view.salvoLocation, app.view.turn)
+}
+app.findGameView();

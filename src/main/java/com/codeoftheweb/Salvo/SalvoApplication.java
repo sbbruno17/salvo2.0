@@ -38,7 +38,7 @@ public class SalvoApplication {
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository,GameRepository gameRepository, GameplayerRepository gameplayerRepository, ShipRepository shipRepository, ScoreRepository scoreRepository) {
 		return (args) -> {
-			// save a couple of customers
+			/* save a couple of customers
 			Player player1 = new Player("j.bauer@ctu.gov",passwordEncoder.encode("24"));
 			Player player2 = new Player("c.obraian@ctu.gov",passwordEncoder.encode("42"));
 			Player player3 = new Player("kim_bauer@gmail.com",passwordEncoder.encode("kb"));
@@ -84,12 +84,12 @@ public class SalvoApplication {
 
 
 			Ship ship1 =  new Ship("Battleship", Arrays.asList("B1", "B2", "B3","B4"));
-			Ship ship2 =  new Ship("Patrol Boat", Arrays.asList("B4", "B5"));
+			Ship ship2 =  new Ship("PatrolBoat", Arrays.asList("B4", "B5"));
 			Ship ship3 =  new Ship("Submarine", Arrays.asList("E1", "F1", "G1"));
 			Ship ship4 =  new Ship("Carrier", Arrays.asList("E4", "E5", "E6","E7","E8"));
 			Ship ship5 =  new Ship("Destroyer", Arrays.asList("H2", "H3", "H4"));
 			Ship ship6 =  new Ship("Battleship", Arrays.asList("F1", "F2", "F3","F4"));
-			Ship ship7 =  new Ship("Patrol Boat", Arrays.asList("F1", "F2"));
+			Ship ship7 =  new Ship("PatrolBoat", Arrays.asList("F1", "F2"));
 			Ship ship8 =  new Ship("Submarine", Arrays.asList("J9", "I9", "H9"));
 			Ship ship9 =  new Ship("Carrier", Arrays.asList("F4", "F5", "F6","F7","F8"));
 			Ship ship10 =  new Ship("Destroyer", Arrays.asList("B5", "C5", "D5"));
@@ -147,6 +147,8 @@ public class SalvoApplication {
 
 			scoreRepository.save (score1);
 			scoreRepository.save (score2);
+			*/
+
 		};
 	}
 }

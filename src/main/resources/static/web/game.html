@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div>
-                    <button type="button" onclick="addShips">SET SHIPS</button>
+                    <button type="button" v-on:click="saveShips()">SET SHIPS</button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -43,7 +43,7 @@
                     <tbody>
                         <tr v-for="row in rows">
                             <th scope="row">{{row}}
-                            <td v-bind:id="row + col + 'O'" v-for="col in columns"></td>
+                            <td v-bind:id="row + col + 'O' onclick='salvoLocation(id)' " v-for="col in columns"></td>
                             </th>
                         </tr>
                     </tbody>
