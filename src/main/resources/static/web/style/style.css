@@ -128,3 +128,7 @@ h3 {
     background-image: url(grid-bkg.png);
     background-size: contain;
 }
+
+.firedSalvo {
+    background-color: red;
+}

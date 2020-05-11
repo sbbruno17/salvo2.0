@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div>
-                    <button type="button" v-on:click="saveShips()">SET SHIPS</button>
+                    <button type="button" v-on:click="addShips()">SET SHIPS</button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -43,11 +43,12 @@
                     <tbody>
                         <tr v-for="row in rows">
                             <th scope="row">{{row}}
-                            <td v-bind:id="row + col + 'O' onclick='salvoLocation(id)' " v-for="col in columns"></td>
+                            <td v-bind:id="row + col " v-on:click="salvoAim(row + col )" v-for="col in columns"></td>
                             </th>
                         </tr>
                     </tbody>
                 </table>
+                <button type="button" v-on:click="salvoFire()">FIRE!</button>
             </div>
         </div>
     </div>

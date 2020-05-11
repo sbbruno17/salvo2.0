@@ -38,7 +38,7 @@ public class SalvoApplication {
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository,GameRepository gameRepository, GameplayerRepository gameplayerRepository, ShipRepository shipRepository, ScoreRepository scoreRepository) {
 		return (args) -> {
-			/* save a couple of customers
+
 			Player player1 = new Player("j.bauer@ctu.gov",passwordEncoder.encode("24"));
 			Player player2 = new Player("c.obraian@ctu.gov",passwordEncoder.encode("42"));
 			Player player3 = new Player("kim_bauer@gmail.com",passwordEncoder.encode("kb"));
@@ -147,7 +147,7 @@ public class SalvoApplication {
 
 			scoreRepository.save (score1);
 			scoreRepository.save (score2);
-			*/
+
 
 		};
 	}

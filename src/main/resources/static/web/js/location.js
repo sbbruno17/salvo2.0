@@ -8,6 +8,10 @@ var app = new Vue({
         shipLocation: [],
         opponentMail: {},
         mainPlayerMail: {},
+        salvoes: {
+            turn: 0,
+            locations: []
+        },
     },
     methods: {
         findGame: function () {
@@ -21,6 +25,7 @@ var app = new Vue({
                 app.locatePlayer();
                 app.locateSalvoes();
                 app.gridCreation();
+                app.firedSalvoes();
 
             })
         },
@@ -41,7 +46,7 @@ var app = new Vue({
                         // var elements = document.getElementById(app.view.salvoes[i].locations[j]);
                         //elements.classList.add('salvoes')
                     } else {
-                        var elements2 = document.getElementById(app.view.salvoes[i].locations[j] + "O");
+                        var elements2 = document.getElementById(app.view.salvoes[i].locations[j]);
                         elements2.classList.add('salvoes2');
                         elements2.innerHTML = app.view.salvoes[i].turn;
 
@@ -49,7 +54,32 @@ var app = new Vue({
                 }
             }
         },
+        saveShips: function () {
+            $(".grid-stack-item").each(function () {
+                var coordinate = [];
+                var ship = {
+                    type: "",
+                    locations: ""
+                };
+                if ($(this).attr("data-gs-width") !== "1") {
+                    for (var i = 0; i < parseInt($(this).attr("data-gs-width")); i++) {
+                        coordinate.push(String.fromCharCode(parseInt($(this).attr("data-gs-y")) + 65) + (parseInt($(this).attr("data-gs-x")) + i + 1).toString());
+                    }
+                } else {
+                    for (var i = 0; i < parseInt($(this).attr("data-gs-height")); i++) {
+                        coordinate.push(String.fromCharCode(parseInt($(this).attr("data-gs-y")) + i + 65) + (parseInt($(this).attr("data-gs-x")) + 1).toString());
+                    }
+                }
+
+                ship.type = $(this).attr("data-gs-id");
+                ship.locations = coordinate;
+                app.shipLocation.push(ship);
+
+
+            })
+        },
         addShips: function () {
+            app.saveShips();
             $.post({
                     url: "/api/games/players/" + app.getIdUrl + "/ships",
                     data: JSON.stringify(app.shipLocation),
@@ -230,111 +260,40 @@ var app = new Vue({
                 }
             }
         },
-        saveShips: function () {
+        salvoAim: function (salvo) {
+            if (app.salvoes.locations.length < 5) {
+                app.salvoes.locations.push(salvo)
+            } else {
+                console.log("Para de disparar, terminator")
+            }
+        },
+        salvoFire: function () {
+            if (app.salvoes.locations.lenght < 5) {
+                alert("Seize yout bullets!")
+            } else if (app.salvoes.locations.length == 5) {
+                $.post({
+                        url: "/api/games/players/" + app.getIdUrl + "/salvos",
+                        data: JSON.stringify(app.salvoes),
+                        dataType: "text",
+                        contentType: "application/json"
+                    })
+                    .done(function () {
+                        alert("Salvos fired!")
+                        location.reload();
 
-            $(".grid-stack-item").each(function () {
-                var coordinate = [];
-                var ship = {
-                    type: "",
-                    locations: ""
-                };
-                if ($(this).attr("data-gs-width") !== "1") {
-                    for (var i = 0; i < parseInt($(this).attr("data-gs-width")); i++) {
-                        coordinate.push(String.fromCharCode(parseInt($(this).attr("data-gs-y")) + 65) + (parseInt($(this).attr("data-gs-x")) + i + 1).toString());
-                    }
-                } else {
-                    for (var i = 0; i < parseInt($(this).attr("data-gs-height")); i++) {
-                        coordinate.push(String.fromCharCode(parseInt($(this).attr("data-gs-y")) + i + 65) + (parseInt($(this).attr("data-gs-x")) + 1).toString());
-                    }
-                }
-
-                ship.type = $(this).attr("data-gs-id");
-                ship.locations = coordinate;
-                app.shipLocation.push(ship);
-                console.log(coordinate);
-
-            });
-            app.addShips();
+                    })
+                    .fail(function () {
+                        alert("Failed shooting salvo");
+                    })
+            }
+        },
+        firedSalvoes: function () {
+            app.view.salvoes.forEach(x => {
+                x.locations.forEach(y => {
+                    document.getElementById(y).classList.add("firedSalvo");
+                })
+            })
         }
     }
 });
-
-function postSalvoes(turn, salvoLocations) {
-
-    if (app.salvo.salvoLocations.length == 5) {
-        var newSalvo = {
-            turn: turn,
-            salvoLocations: salvoLocations
-        };
-        $.post({
-            url: "/api/games/players/" + myParam + "/salvos",
-            data: JSON.stringify(newSalvo),
-            dataType: "text",
-            contentType: "application/json"
-        }).done(function () {
-            location.reload();
-
-
-
-        }).fail(function (jqXHR, error) {
-            mensajeError = JSON.parse(jqXHR.responseText);
-            Swal.fire(mensajeError.error);
-        })
-    } else {
-        Swal.fire('Complete the five shoots');
-    }
-}
-
-//Funcion para guardar los salvoLocations y verificar que no seleccione una celda que ya esta seleccionada 
-function guardarSalvoLocations(id) {
-
-    app.id = id;
-    if (app.salvo.salvoLocations.length < 5) {
-
-
-        if (app.salvo.salvoLocations.includes(id) == false) {
-
-            app.salvo.salvoLocations.push(id);
-            document.getElementById(id).classList.add("salvoesSelect");
-
-            app.salvoesPlayer.forEach(sp => {
-                app.idSalvoPlayer = sp.player;
-                sp.salvoLocations.forEach(eachSalvoLocation => {
-                    if (app.salvo.salvoLocations.includes(eachSalvoLocation)) {
-
-                        document.getElementById(id).classList.remove("salvoesSelect");
-                        quitarSalvoLocation(id)
-
-                        Swal.fire(
-                            'You already select this cell before',
-                            "Try another",
-                            'error'
-                        )
-
-                    }
-                })
-            })
-
-        } else {
-            document.getElementById(id).classList.remove("salvoesSelect");
-            quitarSalvoLocation(id);
-        }
-    } else if (app.salvo.salvoLocations.length == 5) {
-        document.getElementById(id).classList.remove("salvoesSelect");
-        quitarSalvoLocation(id);
-    }
-};
-
-//funcion para quitar un location por si el player se arrepiente de disparar en esa celda 
-
-function quitarSalvoLocation(id) {
-    var index = app.salvo.salvoLocations.indexOf(id);
-    if (index > -1) {
-        app.salvo.salvoLocations.splice(index, 1);
-    }
-}
-
-function salvoLocation() {
-    postSalvoes(app.view.salvoLocation, app.view.turn)
-}
 app.findGameView();

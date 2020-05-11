@@ -26,7 +26,7 @@ public class Salvo {
 
     private int turn;
 
-    public Salvo() {
+    public Salvo() { 
     }
 
     public Salvo(List<String> locations, int turn) {
@@ -63,3 +63,5 @@ public class Salvo {
     }
 
 }
+
+
