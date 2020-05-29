@@ -26,7 +26,9 @@ label {
 }
 
 h2 {
-    text-decoration: underline;
+    font-size: 40px;
+    font-family: 'Pangolin',
+        cursive;
 }
 
 h3 {
@@ -35,15 +37,16 @@ h3 {
 }
 
 .location {
-    background-color: blue;
-}
-
-.salvoes {
     background-color: red;
 }
 
-.salvoes2 {
-    background-color: green
+/*SALVOS DISPARADOS POR mainPlayer*/
+.salvoes {
+    background-color: blue;
+}
+
+table td:hover {
+    background-color: green;
 }
 
 /*ACA PEGO EL SET UP DEL GRID DE NAVES */
@@ -129,6 +132,7 @@ h3 {
     background-size: contain;
 }
 
-.firedSalvo {
-    background-color: red;
+#aim {
+    width: 400px;
+    height: 400px;
 }

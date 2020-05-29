@@ -4,16 +4,20 @@ var app = new Vue({
         getIdUrl: null,
         columns: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-        view: {},
+        view: [],
         shipLocation: [],
-        opponentMail: {},
-        mainPlayerMail: {},
+        opponent: {},
+        mainPlayer: {},
+        playerHistory: [],
+        opponentHistory: [],
         salvoes: {
-            turn: 0,
+            turn: 1,
             locations: []
         },
-    },
+        diferencia: 0,
+    }, //FUNCIONES VUE
     methods: {
+        //VISTA DEL JUEGO
         findGame: function () {
             const urlParams = new URLSearchParams(window.location.search);
             app.getIdUrl = urlParams.get('gp');
@@ -25,35 +29,68 @@ var app = new Vue({
                 app.locatePlayer();
                 app.locateSalvoes();
                 app.gridCreation();
-                app.firedSalvoes();
-
+                app.gameHistory();
+                app.opponentGameHistory();
             })
         },
-
         locatePlayer: function () {
             for (i = 0; i < app.view.gamePlayers.length; i++) {
                 if (app.view.gamePlayers[i].id == app.getIdUrl)
-                    app.mainPlayerMail = app.view.gamePlayers[i].player
+                    app.mainPlayer = app.view.gamePlayers[i].player
                 else
-                    app.opponentMail = app.view.gamePlayers[i].player
+                    app.opponent = app.view.gamePlayers[i].player
 
             }
-        },
-        locateSalvoes: function () {
+        }, //SALVOS
+        locateSalvoes: function () { //MAIN PLAYER SALVOS
             for (i = 0; i < app.view.salvoes.length; i++) {
                 for (j = 0; j < app.view.salvoes[i].locations.length; j++) {
-                    if (app.mainPlayerMail.id == app.view.salvoes[i].playerId) {
-                        // var elements = document.getElementById(app.view.salvoes[i].locations[j]);
-                        //elements.classList.add('salvoes')
-                    } else {
+                    if (app.mainPlayer.id == app.view.salvoes[i].playerId) {
                         var elements2 = document.getElementById(app.view.salvoes[i].locations[j]);
-                        elements2.classList.add('salvoes2');
+                        elements2.classList.add('salvoes');
                         elements2.innerHTML = app.view.salvoes[i].turn;
-
                     }
                 }
             }
         },
+        salvoAim: function (salvo) {
+            if (app.salvoes.locations.length < 5) {
+                app.salvoes.locations.push(salvo)
+                document.getElementById(salvo).classList.add("salvoes")
+            } else if (app.salvoes.locations.length == 5 || app.salvoes.locations.some(loc => loc == salvo)) {
+                document.getElementById(salvo).classList.remove("salvoes");
+                app.salvoes.locations = app.salvoes.locations.filter(salvoes => salvoes != salvo)
+            } else {
+                console.log("Para de disparar, terminator")
+            }
+        },
+        salvoFire: function () {
+
+            var mainPlayerSalvoes = app.view.salvoes.filter(salvoes => salvoes.playerId == app.mainPlayer.id);
+            var opponentSalvoes = app.view.salvoes.filter(salvoes => salvoes.playerId != app.mainPlayer.id);
+            app.salvoes.turn = mainPlayerSalvoes.length + 1
+            var diff = mainPlayerSalvoes.length - opponentSalvoes.length
+            if (diff >= 1) {
+                alert("Opponent's Turn")
+            } else if (app.salvoes.locations.lenght < 5) {
+                alert("Seize yout bullets!")
+            } else if (app.salvoes.locations.length == 5) {
+                $.post({
+                        url: "/api/games/players/" + app.getIdUrl + "/salvos",
+                        data: JSON.stringify(app.salvoes),
+                        dataType: "text",
+                        contentType: "application/json"
+                    })
+                    .done(function () {
+                        alert("Salvos fired!")
+                        location.reload();
+
+                    })
+                    .fail(function () {
+                        alert("Failed Shooting");
+                    })
+            }
+        }, //SHIPS
         saveShips: function () {
             $(".grid-stack-item").each(function () {
                 var coordinate = [];
@@ -93,7 +130,7 @@ var app = new Vue({
                 .fail(function () {
                     alert("error");
                 })
-        },
+        }, //GRID
         gridCreation: function () {
             const options = {
                 //grilla de 10 x 10
@@ -113,9 +150,7 @@ var app = new Vue({
                 staticGrid: false,
                 animate: true,
             }
-
             //CREACION DE GRILLA Y WIDGETS (NAVES) CUANDO NO HAY SHIPS EN JUEGO
-
             if (app.view.ships.length == 0) {
                 const grid = GridStack.init(options, '#grid');
                 grid.addWidget('<div><div id="Submarine" class="grid-stack-item-content SubmarineHorizontal"></div><div/>', {
@@ -158,9 +193,7 @@ var app = new Vue({
                         noResize: true,
                         id: "Battleship"
                     })
-
                 //CONFIGURACION DE LAS NAVES
-
                 $("#Carrier,#Battleship,#Submarine,#Destroyer,#PatrolBoat").click(function () {
                     var idShip = $(this)[0].id;
                     var widthShip = parseInt($(this)[0].dataset.gsWidth);
@@ -184,7 +217,6 @@ var app = new Vue({
                         $(this).children().removeClass(idShip + "Vertical");
                     }
                 });
-
                 //rotacion de las naves
                 //obteniendo los ships agregados en la grilla
                 const ships = document.querySelectorAll("#Carrier,#Battleship,#Submarine,#Destroyer,#PatrolBoat");
@@ -260,39 +292,112 @@ var app = new Vue({
                 }
             }
         },
-        salvoAim: function (salvo) {
-            if (app.salvoes.locations.length < 5) {
-                app.salvoes.locations.push(salvo)
-            } else {
-                console.log("Para de disparar, terminator")
+        //FUNCION PARA CREAR GAME HISTORY
+        gameHistory: function () {
+            var mainSalvoes = this.view.salvoes.filter(salvoes => salvoes.playerId == app.mainPlayer.id);
+            var gameHistory = [];
+            //SACO LOS TURN Y ORDENO DE MENOR A MAYOR:
+            for (var i = 0; i < mainSalvoes.length; i++) {
+                var playerHistory = {
+                    turn: mainSalvoes[i].turn,
+                    miss: 0,
+                    hit: 0,
+                    sunk: 0,
+                    remain: []
+                };
+                gameHistory.push(playerHistory)
             }
-        },
-        salvoFire: function () {
-            if (app.salvoes.locations.lenght < 5) {
-                alert("Seize yout bullets!")
-            } else if (app.salvoes.locations.length == 5) {
-                $.post({
-                        url: "/api/games/players/" + app.getIdUrl + "/salvos",
-                        data: JSON.stringify(app.salvoes),
-                        dataType: "text",
-                        contentType: "application/json"
-                    })
-                    .done(function () {
-                        alert("Salvos fired!")
-                        location.reload();
+            gameHistory.sort((a, b) => a.turn - b.turn);
 
-                    })
-                    .fail(function () {
-                        alert("Failed shooting salvo");
-                    })
-            }
-        },
-        firedSalvoes: function () {
-            app.view.salvoes.forEach(x => {
-                x.locations.forEach(y => {
-                    document.getElementById(y).classList.add("firedSalvo");
+            //MISS AND HITS(X TURNO)
+            gameHistory.forEach(plHistoryTurn => {
+                app.view.mainPlayerHits.forEach(hit => {
+                    if (plHistoryTurn.turn == hit.turn) {
+                        plHistoryTurn.hit = hit.hits.length;
+                        plHistoryTurn.miss = 5 - plHistoryTurn.hit;
+                    }
                 })
             })
+            //SUNK (X TURNO)
+            gameHistory.forEach(plHistoryTurn => {
+                app.view.mainPlayerSunken.forEach(sunk => {
+                    if (plHistoryTurn.turn == sunk.turns) {
+                        if (sunk.sunken.length == 0) {
+                            plHistoryTurn.sunk = 0;
+                        } else {
+                            sunk.sunken.forEach(type => {
+                                plHistoryTurn.sunk = type
+                            })
+                        }
+                    }
+                })
+            })
+            gameHistory.forEach(plHistoryTurn => {
+                app.view.remainingShips.forEach(remain => {
+                    if (plHistoryTurn.turn == remain.turn) {
+                        remain.shipsRemain.forEach(type => {
+                            plHistoryTurn.remain.push(type);
+                        })
+
+                    }
+                })
+            })
+
+            app.playerHistory = gameHistory
+
+        },
+        opponentGameHistory: function () {
+            var oppSalvoes = app.view.salvoes.filter(salvoes => salvoes.playerId != app.mainPlayer.Id)
+            var oppGameHistory = [];
+            //SACO LOS TURN Y ORDENO DE MENOR A MAYOR:
+            for (var i = 0; i < oppSalvoes.length; i++) {
+                var opponentHistory = {
+                    turn: oppSalvoes[i].turn,
+                    miss: 0,
+                    hit: 0,
+                    sunk: 0,
+                    remain: []
+                };
+                oppGameHistory.push(opponentHistory)
+            }
+            oppGameHistory.sort((a, b) => a.turn - b.turn);
+
+
+            //MISS AND HITS(X TURNO)
+            oppGameHistory.forEach(oppHistoryTurn => {
+                app.view.opponentHits.forEach(hit => {
+                    if (oppHistoryTurn.turn == hit.turn) {
+                        oppHistoryTurn.hit = hit.hits.length;
+                        oppHistoryTurn.miss = 5 - oppHistoryTurn.hit;
+                    }
+                })
+            })
+            //SUNK (X TURNO)
+            oppGameHistory.forEach(oppHistoryTurn => {
+                app.view.opponentSunken.forEach(sunk => {
+                    if (oppHistoryTurn.turn == sunk.turns) {
+                        if (sunk.sunken.length == 0) {
+                            oppHistoryTurn.sunk = 0;
+                        } else {
+                            sunk.sunken.forEach(type => {
+                                oppHistoryTurn.sunk = type
+                            })
+                        }
+                    }
+                })
+            })
+
+            oppGameHistory.forEach(oppHistoryTurn => {
+                app.view.remainingOppShips.forEach(remain => {
+                    if (oppGameHistory.turn == remain.turn) {
+                        remain.remainingOppShips.forEach(type => {
+                            oppHistoryTurn.remain.push(type);
+                        })
+
+                    }
+                })
+            })
+            app.opponentHistory = oppGameHistory;
         }
     }
 });
