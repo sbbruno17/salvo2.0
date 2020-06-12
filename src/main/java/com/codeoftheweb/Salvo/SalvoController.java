@@ -33,6 +33,9 @@ public class SalvoController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ScoreRepository scoreRepository;
+
 
 
     @RequestMapping("/games")
@@ -174,20 +177,24 @@ public class SalvoController {
                 return new ResponseEntity<>(makeMap("error", "cannot attack now"), HttpStatus.FORBIDDEN);
             }else if (gameplayer.getSalvoes().stream().anyMatch(x -> x.getTurn() == salvo.getTurn())) {
                 return new ResponseEntity<>(makeMap("error","turn already played"), HttpStatus.FORBIDDEN);
-            }
-            stateGame = gameplayer.getState();
-            switch (stateGame) {
-                case "YOU_WON":
-                    ScoreRepository.save(new Score(gameplayer.getPlayer(), gameplayer.getGame(),1.0));
-
-
-
-            }
-
-
-            else {
+            }else {
                 gameplayer.addSalvo(salvo);
                 gameplayerRepository.save(gameplayer);
+                stateGame = gameplayer.getState();
+                switch (stateGame) {
+                    case "YOU_WON":
+                        scoreRepository.save(new Score(gameplayer.getPlayer(), gameplayer.getGame(),1.0));
+                        scoreRepository.save(new Score(gameplayer.getOpponent().getPlayer(),gameplayer.getGame(),0.0));
+                        break;
+                    case "TIE":
+                        scoreRepository.save(new Score (gameplayer.getPlayer(),gameplayer.getGame(),0.5));
+                        scoreRepository.save(new Score (gameplayer.getOpponent().getPlayer(),gameplayer.getGame(),0.5));
+                        break;
+                    case "YOU_LOST":
+                        scoreRepository.save (new Score (gameplayer.getPlayer(),gameplayer.getGame(),0.0));
+                        scoreRepository.save (new Score (gameplayer.getOpponent().getPlayer(),gameplayer.getGame(),1.0));
+                }
+
                 return new ResponseEntity<>(makeMap("success", "Salvo fired successfully"), HttpStatus.CREATED);
             }
         }
