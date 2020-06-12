@@ -1,89 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <link href="Style/Style.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <link href="style/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>GAMES</title>
-
 </head>
-<body>
-<div>
-    <h1>SALVO BATTLE SHIP!</h1>
-</div>
-<div id="app">
 
-    <div class="row d-flex justify-content-between">
-            <div class="col-3 mb-4">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                           placeholder="Enter email">
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                        else.</small>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+<body>
+    <div id="app" class="container">
+        <div v-if="loggedPlayer == null">
+            <div id="logo">
+                <h1><i> LOGIN TO START</i></h1>
             </div>
-            <div class="col-3">
-                <h2>Current Games</h2>
-                <ol>
-                    <li v-for="game in games">
-                        {{game.created}}
-                        <ul>
-                            <li v-for="gamePlayer in game.gamePlayers">
-                                {{gamePlayer.player.userName}}
-                            </li>
-                        </ul>
-                    </li>
-                </ol>
+            <section class="stark-login">
+
+                <form>
+                    <div id="fade-box">
+                        <input v-model:value="email" type="email" name="username" id="username" placeholder="Username"
+                            required>
+                        <input v-model:value="password" type="password" placeholder="Password" required>
+
+                        <button onclick="login()" type="button">Log In</button>
+                        <button onclick="signUp()" type="button">Sign Up</button>
+                    </div>
+                </form>
+                <div class="hexagons">
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <br>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <br>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+
+                    <br>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <br>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                    <span>&#x2B22;</span>
+                </div>
+            </section>
+
+            <div id="circle1">
+                <div id="inner-cirlce1">
+                    <h2> </h2>
+                </div>
             </div>
         </div>
-    <div class="row col-9">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Player</th>
-                <th>Total Score</th>
-                <th>Number of Wins</th>
-                <th>Number of Losses</th>
-                <th>Number of Ties</th>
-            </tr>
-            <tr v-for="score in scores">
-                <td>{{score.player}}</td>
-                <td>{{score.nTotal}}</td>
-                <td>{{score.nWins}}</td>
-                <td>{{score.nLoss}}</td>
-                <td>{{score.nTies}}</td>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
-    <footer>
+        <div v-if="loggedPlayer != null">
+            <div class="row justify-content-center">
+                <img id="logOutBtn" src="./Media/logout.png" onclick="logout()" type="button"></img>
+            </div>
+            <div class="row justify-content-center">
+                <h3 class="">WELCOME!<br>{{loggedPlayer.userName}}</h3>
+            </div>
+        </div>
 
-    </footer>
+        </main>
+        <div class="row justify-content-between">
+            <div v-if="loggedPlayer != null" class="col-md-4 justify-content-center table-dark">
+                <table id="scoreTable">
+                    <h3>SCORE TABLE!</h3>
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Total Score</th>
+                            <th>Nº Wins</th>
+                            <th>Nº Losses</th>
+                            <th>Nº Ties</th>
+                        </tr>
+                        <tr v-for="score in scores">
+                            <td>{{score.player}}</td>
+                            <td>{{score.nTotal}}</td>
+                            <td>{{score.nWins}}</td>
+                            <div class="col-3 text-white bg-dark">
+                                <td>{{score.nLoss}}</td>
+                                <td>{{score.nTies}}</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div v-if="loggedPlayer != null" class="col-md-4 justify-content-center table-dark">
+                <h3 type="button" class="data-toggle='collapse'">Current Games</h3>
+                <div>
+                    <ol>
+                        <div>
+                            <a v-on:click="createGame"><button>New Game</button></a>
+                        </div>
+                        <li class="justify-content-center" v-for="game in games">
+                            {{game.created | timeSet}}
+                            <ul>
+                                <li class="justify-content-center" v-for=" gamePlayer in game.gamePlayers">
+                                    {{gamePlayer.player.userName}}
+                                    <div
+                                        v-if="loggedPlayer !=null && gamePlayer.player.userName ==loggedPlayer.userName">
+                                        <a :href="'game.html?gp='+ gamePlayer.id"><button>Back
+                                                to Game</button></a>
+                                    </div>
+                                    <div
+                                        v-if="loggedPlayer !=null && loggedPlayer.userName != gamePlayer.player.userName && game.gamePlayers.length === 1">
+                                        <button v-on:click="joinGame(game.id)">Join Game</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/moment.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="js/game-table.js"></script>
+
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-<script src="js/game-table.js"></script>
 </html>

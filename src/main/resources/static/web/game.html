@@ -7,105 +7,107 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack-extra.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
     <link href="./style/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>SHIP LOCATIONS</title>
+    <title>BATTLE</title>
 
 </head>
 
 <body>
     <div class="container-fluid" id="app">
-        <div class="row justify-content-around">
-            <h1>SALVO BATTLE SHIP!</h1>
-            <div>
+        <div>
+            <div class="row justify-content-around">
                 <a href="games.html"><button>
                         BACK TO GAMES
                     </button></a>
             </div>
-        </div>
-        <div class="row justify-content-around">
-            <div>
-                <h2>{{mainPlayer.userName}}</h2>
-            </div>
-            <H2>VS</H2>
-            <div>
-                <h2>{{opponent.userName}}</h2>
-            </div>
-        </div>
-        <div class="row  justify-content-center">
-            <div class="col-md-4">
-                <div id="grid-ships">
-                    <!-- div que usa la librería gridstack-->
-                    <div id="grid" class="grid-stack grid-stack-10">
-
-                    </div>
-                </div>
+            <div class="row justify-content-around">
                 <div>
-                    <button type="button" v-on:click="addShips()">SET SHIPS</button>
+                    <h2>{{mainPlayer.userName}}</h2>
+                </div>
+                <H2>VS</H2>
+                <div>
+                    <h2>{{opponent.userName}}</h2>
                 </div>
             </div>
-            <div class="col-md-4">
-                <table id="aim" class="table-bordered table-dark">
-                    <thead>
-                        <tr>
-                            <td>#</td>
-                            <td v-for="col in columns" scope="col">{{col}}
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="row in rows">
-                            <th scope="row">{{row}}
-                            <td v-bind:id="row + col " v-on:click="salvoAim(row + col )" v-for="col in columns"></td>
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-                <table class="table-bordered table-dark">
-                    <thead>
-                        <tr>
-                            <th>SHIPS ON DUTTY</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="pl in playerHistory">
-                            <td>{{pl.remain}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="button" v-on:click="salvoFire()"> FIRE ! ! !</button>
-            </div>
-            <div class="col-md-3">
-                <div class="row">
-                    <div class="col-md-3 mr-5">
-                        <table class="table-bordered table-dark">
-                            <thead>
-                                <tr>
-                                    <th colspan="3">Given Hits</th>
-                                </tr>
-                                <tr>
-                                    <th>Turns</th>
-                                    <th>Hits(#)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="pl in playerHistory">
-                                    <td>{{pl.turn}}</td>
-                                    <td>{{pl.hit}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div class="row  justify-content-center">
+                <div class="col-md-4">
+                    <div id="grid-ships">
+                        <!-- div que usa la librería gridstack-->
+                        <div id="grid" class="grid-stack grid-stack-10">
+
+                        </div>
                     </div>
+                    <button v-if="view.gameState=='ATTACK'" type="button" v-on:click="salvoFire()"> ATTACK
+                        !</button>
+                    <div>
+                        <button v-if="view.gameState=='PLACE_SHIPS'" type="button" v-on:click="addShips()">SET
+                            SHIPS</button>
+                    </div>
+                </div>
+                <div v-show="view.gameState=='ATTACK'" class="col-md-4">
+                    <table id="aim" class="table-bordered table-light">
+                        <thead>
+                            <tr>
+                                <td>#</td>
+                                <td v-for="col in columns" scope="col">{{col}}
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in rows">
+                                <th scope="row">{{row}}
+                                <td v-bind:id="row + col " v-on:click="salvoAim(row + col )" v-for="col in columns">
+                                </td>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <table class="table-bordered table-light">
+            <thead>
+                <tr>
+                    <th>SHIPS ON DUTTY</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="pl in playerHistory">
+                    <td>{{pl.remain}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-3 mr-5">
+                    <table class="table-light">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Given Hits</th>
+                            </tr>
+                            <tr>
+                                <th>Turns</th>
+                                <th>Hits(#)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="pl in playerHistory">
+                                <td>{{pl.turn}}</td>
+                                <td>{{pl.hit}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer>
 
-    </footer>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

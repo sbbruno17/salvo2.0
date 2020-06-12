@@ -15,6 +15,8 @@ var app = new Vue({
             locations: []
         },
         diferencia: 0,
+        oppShipsLeft: [],
+        mainShipsLeft: [],
     }, //FUNCIONES VUE
     methods: {
         //VISTA DEL JUEGO
@@ -56,9 +58,9 @@ var app = new Vue({
         salvoAim: function (salvo) {
             if (app.salvoes.locations.length < 5) {
                 app.salvoes.locations.push(salvo)
-                document.getElementById(salvo).classList.add("salvoes")
+                document.getElementById(salvo).classList.add("aim")
             } else if (app.salvoes.locations.length == 5 || app.salvoes.locations.some(loc => loc == salvo)) {
-                document.getElementById(salvo).classList.remove("salvoes");
+                document.getElementById(salvo).classList.remove("aim");
                 app.salvoes.locations = app.salvoes.locations.filter(salvoes => salvoes != salvo)
             } else {
                 console.log("Para de disparar, terminator")
@@ -292,7 +294,7 @@ var app = new Vue({
                 }
             }
         },
-        //FUNCION PARA CREAR GAME HISTORY
+        //GAME HISTORY
         gameHistory: function () {
             var mainSalvoes = this.view.salvoes.filter(salvoes => salvoes.playerId == app.mainPlayer.id);
             var gameHistory = [];
@@ -307,9 +309,11 @@ var app = new Vue({
                 };
                 gameHistory.push(playerHistory)
             }
-            gameHistory.sort((a, b) => a.turn - b.turn);
+            gameHistory.sort((b, a) => a.turn - b.turn);
+            app.mainShipsLeft = gameHistory[0].remain
 
-            //MISS AND HITS(X TURNO)
+
+            //MISS AND HITS
             gameHistory.forEach(plHistoryTurn => {
                 app.view.mainPlayerHits.forEach(hit => {
                     if (plHistoryTurn.turn == hit.turn) {
@@ -318,7 +322,7 @@ var app = new Vue({
                     }
                 })
             })
-            //SUNK (X TURNO)
+            //SUNK
             gameHistory.forEach(plHistoryTurn => {
                 app.view.mainPlayerSunken.forEach(sunk => {
                     if (plHistoryTurn.turn == sunk.turns) {
@@ -347,9 +351,8 @@ var app = new Vue({
 
         },
         opponentGameHistory: function () {
-            var oppSalvoes = app.view.salvoes.filter(salvoes => salvoes.playerId != app.mainPlayer.Id)
+            var oppSalvoes = app.view.salvoes.filter(salvoes => salvoes.playerId != app.mainPlayer.id)
             var oppGameHistory = [];
-            //SACO LOS TURN Y ORDENO DE MENOR A MAYOR:
             for (var i = 0; i < oppSalvoes.length; i++) {
                 var opponentHistory = {
                     turn: oppSalvoes[i].turn,
@@ -360,10 +363,11 @@ var app = new Vue({
                 };
                 oppGameHistory.push(opponentHistory)
             }
-            oppGameHistory.sort((a, b) => a.turn - b.turn);
+            oppGameHistory.sort((b, a) => a.turn - b.turn);
+            app.oppShipsLeft = oppGameHistory[0].remain
 
 
-            //MISS AND HITS(X TURNO)
+            //MISS AND HITS
             oppGameHistory.forEach(oppHistoryTurn => {
                 app.view.opponentHits.forEach(hit => {
                     if (oppHistoryTurn.turn == hit.turn) {
@@ -372,7 +376,7 @@ var app = new Vue({
                     }
                 })
             })
-            //SUNK (X TURNO)
+            //SUNK
             oppGameHistory.forEach(oppHistoryTurn => {
                 app.view.opponentSunken.forEach(sunk => {
                     if (oppHistoryTurn.turn == sunk.turns) {
@@ -389,8 +393,8 @@ var app = new Vue({
 
             oppGameHistory.forEach(oppHistoryTurn => {
                 app.view.remainingOppShips.forEach(remain => {
-                    if (oppGameHistory.turn == remain.turn) {
-                        remain.remainingOppShips.forEach(type => {
+                    if (oppHistoryTurn.turn == remain.turn) {
+                        remain.shipsRemain.forEach(type => {
                             oppHistoryTurn.remain.push(type);
                         })
 
@@ -398,7 +402,18 @@ var app = new Vue({
                 })
             })
             app.opponentHistory = oppGameHistory;
-        }
+        },
+        //GAME STATES
+        checkgameState: function () {
+            if (app.view.gameState == "WAITING_OPPONENT" || app.view.gameState == "WAITING_OPPONENT_SHIPS" || app.view.gameState == "OPPONENT'S_ATTACKING") {
+                setTimeout(location.reload, 10000)
+                /* } else if (app.view.gameSTate == "YOU_WIN") {
+
+                */
+            }
+        },
+
     }
 });
 app.findGameView();
+app.checkgameState();

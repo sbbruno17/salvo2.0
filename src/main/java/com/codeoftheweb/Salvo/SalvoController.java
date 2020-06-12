@@ -53,7 +53,7 @@ public class SalvoController {
         return dto;
     }
 
-    //CREACION DE PARTIDA
+    //GAME CREATION
     @PostMapping("games")
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
         if (isGuest(authentication)) {
@@ -66,7 +66,7 @@ public class SalvoController {
         return new ResponseEntity<>(makeMap("gamePlayerId", newGamePlayer.getId()), HttpStatus.CREATED);
     }
 
-    //CREACION DEL GAME_VIEW (VISTA DEL JUEGO)
+    //GAME_VIEW CREATION (VISTA DEL JUEGO)
     @GetMapping("/game_view/{gamePlayerId}")
     public ResponseEntity<Map<String, Object>> gameView(@PathVariable Long gamePlayerId, Authentication authentication) {
         Player playerLog = playerRepository.findByUserName(authentication.getName());
@@ -80,7 +80,7 @@ public class SalvoController {
         return new ResponseEntity<>(gameplayer.get().toDTOGameView(), HttpStatus.CREATED);
     }
 
-//CREACION DE USER
+// USER CREATION
     @PostMapping("players")
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String username, @RequestParam String password) {
         if (username.isEmpty() || password.isEmpty()) {
@@ -104,7 +104,7 @@ public class SalvoController {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 
-    //CREACION DE JUEGO + UNIRSE A LA PARTIDA
+    //GAME CREATING + JOINING
     @PostMapping("/games/{gameId}/player")
     private ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long gameId, Authentication authentication) {
         Player player = playerRepository.findByUserName(authentication.getName());
@@ -129,7 +129,7 @@ public class SalvoController {
         return new ResponseEntity<>(makeMap("gpID", gamePlayer.getId()), HttpStatus.OK);
     }
 
-    //CREAR SHIPS
+    //SHIP CREATION
     @PostMapping("/games/players/{gamePlayerId}/ships")
     public ResponseEntity<Map<String, Object>> addShip(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
         GamePlayer gameplayer = gameplayerRepository.findById(gamePlayerId).orElse(null);
@@ -149,10 +149,11 @@ public class SalvoController {
         }
     }
 
-    //CREAR SALVOS
+    // SALVOS CREATION
     @PostMapping("/games/players/{gamePlayerId}/salvos")
     public ResponseEntity<Map<String, Object>> addSalvo(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication) {
         GamePlayer gameplayer = gameplayerRepository.findById(gamePlayerId).orElse(null);
+        String stateGame = gameplayer.getState();
         Player player = playerRepository.findByUserName(authentication.getName());
         if (isGuest(authentication)) {
             return new ResponseEntity<>(makeMap("error", "No player logged. Please Log in before entering any game"), HttpStatus.UNAUTHORIZED);
@@ -166,10 +167,28 @@ public class SalvoController {
             int diff = gameplayer.getSalvoes().size() - gameplayer.getOpponent().getSalvoes().size();
             if (diff >=1) {
                 return new ResponseEntity<>(makeMap("error", "Opponent's turn"), HttpStatus.UNAUTHORIZED);
-            } else {
+            }
+            else if (stateGame.equals("YOU_WIN") || stateGame.equals("YOU_LOST") || stateGame.equals("TIE")){
+            return new ResponseEntity<>(makeMap("error","Game Over"), HttpStatus.FORBIDDEN);
+            }else if(!stateGame.equals(("FIRE"))){
+                return new ResponseEntity<>(makeMap("error", "cannot attack now"), HttpStatus.FORBIDDEN);
+            }else if (gameplayer.getSalvoes().stream().anyMatch(x -> x.getTurn() == salvo.getTurn())) {
+                return new ResponseEntity<>(makeMap("error","turn already played"), HttpStatus.FORBIDDEN);
+            }
+            stateGame = gameplayer.getState();
+            switch (stateGame) {
+                case "YOU_WON":
+                    ScoreRepository.save(new Score(gameplayer.getPlayer(), gameplayer.getGame(),1.0));
+
+
+
+            }
+
+
+            else {
                 gameplayer.addSalvo(salvo);
                 gameplayerRepository.save(gameplayer);
-                return new ResponseEntity<>(makeMap("succes", "Salvo fired succesfully"), HttpStatus.CREATED);
+                return new ResponseEntity<>(makeMap("success", "Salvo fired successfully"), HttpStatus.CREATED);
             }
         }
     }

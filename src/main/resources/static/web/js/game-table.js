@@ -6,7 +6,11 @@ var app = new Vue({
         loggedPlayer: "",
         email: "",
         password: "",
-        jsonPrueba: ["eeee esto seria un json?"],
+    },
+    filters: {
+        timeSet: function (value) {
+            return moment(value).format("D,MMM YY, k:m a")
+        }
     },
     methods: {
         findData: function () {
@@ -105,11 +109,13 @@ function signUp() {
         alert("Please fill all the fields");
     } else {
         $.post("/api/players", {
-            username: user,
-            password: pass,
-        }).done(login())
+                username: user,
+                password: pass,
+            }, login)
+            .fail(function () {
+                alert("sign up failed");
+            })
     }
+
 }
-
-
 app.findData();
