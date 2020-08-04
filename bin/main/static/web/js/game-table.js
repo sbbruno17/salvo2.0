@@ -9,7 +9,7 @@ var app = new Vue({
     },
     filters: {
         timeSet: function (value) {
-            return moment(value).format("D,MMM YY, k:m a")
+            return moment(value).format("D MMM YYYY - k:m a")
         }
     },
     methods: {

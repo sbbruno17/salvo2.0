@@ -114,14 +114,15 @@
         </div>
 
         </main>
+        <!--USAR EL ACORDION PARA MOSTRAR JUEGOS O SCORE-->
         <div class="row justify-content-between">
-            <div v-if="loggedPlayer != null" class="col-md-4 justify-content-center table-dark">
-                <table id="scoreTable">
+            <div v-if="loggedPlayer != null" class="col-md-5 justify-content-center">
+                <table id="scoreTable" class="table-bordered table-dark ">
                     <h3>SCORE TABLE!</h3>
                     <thead>
                         <tr>
                             <th>Player</th>
-                            <th>Total Score</th>
+                            <th>Total</th>
                             <th>Nº Wins</th>
                             <th>Nº Losses</th>
                             <th>Nº Ties</th>
@@ -138,46 +139,63 @@
                 </table>
             </div>
 
-            <div v-if="loggedPlayer != null" class="col-md-4 justify-content-center table-dark">
-                <h3 type="button" class="data-toggle='collapse'">Current Games</h3>
-                <div>
-                    <ol>
-                        <div>
-                            <a v-on:click="createGame"><button>New Game</button></a>
+            <div v-if="loggedPlayer != null" class="col-md-5 bg-light" id="accordion">
+                <div class="card justify-content-center">
+                    <div class="card-header bg-light" id="headingThree">
+                        <h5 class="mb-0">
+                            <h4 type="button" data-toggle="collapse" data-target="#games" aria-expanded="false"
+                                aria-controls="collapseThree">
+                                GAMES
+                            </h4>
+                        </h5>
+                    </div>
+                    <div>
+                        <div class="card-body bg-light text-dark">
+                            <div id="newGameBtn">
+                                <h4 v-on:click=" createGame"><img class='ml-20' type="button"
+                                        src="https://img.icons8.com/fluent/48/000000/controller.png" />
+                                    <b type="button"></b>New Game
+                                </h4>
+                                <br>
+                            </div>
+                            <div id="games" class="collapse" data-parent="#accordion">
+                                <ol class="justify-content-center">
+                                    <li v-for="game in games">
+                                        {{game.created | timeSet}}
+                                        <ul>
+                                            <li v-for=" gamePlayer in game.gamePlayers">
+                                                {{gamePlayer.player.userName}}
+                                                <a type="button"
+                                                    v-if="loggedPlayer !=null && gamePlayer.player.userName ==loggedPlayer.userName"
+                                                    :href="'game.html?gp='+ gamePlayer.id"><button
+                                                        class="btn btn-outline-light"><img
+                                                            src="https://img.icons8.com/ios/50/000000/infinity-gauntlet.png" />Back
+                                                        to game</a></button>
+                                                <button class="btn btn-outline-light"
+                                                    v-if="loggedPlayer !=null && loggedPlayer.userName != gamePlayer.player.userName && game.gamePlayers.length === 1"
+                                                    v-on:click="joinGame(game.id)"><img
+                                                        src="https://img.icons8.com/ios-filled/50/000000/infinity-gauntlet.png" />Join</button>
+                                            </li><br>
+                                        </ul>
+                                    </li>
+                                </ol>
+                            </div>
                         </div>
-                        <li class="justify-content-center" v-for="game in games">
-                            {{game.created | timeSet}}
-                            <ul>
-                                <li class="justify-content-center" v-for=" gamePlayer in game.gamePlayers">
-                                    {{gamePlayer.player.userName}}
-                                    <div
-                                        v-if="loggedPlayer !=null && gamePlayer.player.userName ==loggedPlayer.userName">
-                                        <a :href="'game.html?gp='+ gamePlayer.id"><button>Back
-                                                to Game</button></a>
-                                    </div>
-                                    <div
-                                        v-if="loggedPlayer !=null && loggedPlayer.userName != gamePlayer.player.userName && game.gamePlayers.length === 1">
-                                        <button v-on:click="joinGame(game.id)">Join Game</button>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ol>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="scripts/moment.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-    </script>
-    <script src="js/game-table.js"></script>
+        <script src="scripts/moment.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+        </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+        </script>
+        <script src="js/game-table.js"></script>
 
 </body>
 

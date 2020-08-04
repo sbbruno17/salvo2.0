@@ -18,108 +18,101 @@
 
 <body>
     <div class="container-fluid" id="app">
-        <div>
-            <div class="row justify-content-around">
-                <a href="games.html"><button>
-                        BACK TO GAMES
-                    </button></a>
+        <div class="row justify-content-around">
+            <a href="games.html"><button>
+                    BACK TO GAMES
+                </button></a>
+        </div>
+        <div class="row justify-content-around">
+            <div>
+                <h2>{{mainPlayer.userName}}</h2>
             </div>
-            <div class="row justify-content-around">
-                <div>
-                    <h2>{{mainPlayer.userName}}</h2>
+            <H2>VS</H2>
+            <div>
+                <h2>{{opponent.userName}}</h2>
+            </div>
+        </div>
+        <div class="row  justify-content-center">
+            <div class="col-md-4">
+                <div id="grid-ships">
+                    <!-- div que usa la librería gridstack-->
+                    <div id="grid" class="grid-stack grid-stack-10"></div>
                 </div>
-                <H2>VS</H2>
+                <button v-if="view.gameState=='ATTACK'" type="button" v-on:click="salvoFire()"> ATTACK!</button>
                 <div>
-                    <h2>{{opponent.userName}}</h2>
+                    <button v-if="view.gameState=='PLACE_SHIPS'" type="button" v-on:click="addShips()">SET
+                        SHIPS</button>
                 </div>
             </div>
-            <div class="row  justify-content-center">
-                <div class="col-md-4">
-                    <div id="grid-ships">
-                        <!-- div que usa la librería gridstack-->
-                        <div id="grid" class="grid-stack grid-stack-10">
-
-                        </div>
-                    </div>
-                    <button v-if="view.gameState=='ATTACK'" type="button" v-on:click="salvoFire()"> ATTACK
-                        !</button>
-                    <div>
-                        <button v-if="view.gameState=='PLACE_SHIPS'" type="button" v-on:click="addShips()">SET
-                            SHIPS</button>
-                    </div>
-                </div>
-                <div v-show="view.gameState=='ATTACK'" class="col-md-4">
-                    <table id="aim" class="table-bordered table-light">
-                        <thead>
-                            <tr>
-                                <td>#</td>
-                                <td v-for="col in columns" scope="col">{{col}}
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="row in rows">
-                                <th scope="row">{{row}}
-                                <td v-bind:id="row + col " v-on:click="salvoAim(row + col )" v-for="col in columns">
-                                </td>
-                                </th>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div v-show="view.gameState=='ATTACK'" class="col-md-4">
+                <table id="aim" class="table-bordered table-light">
+                    <thead>
+                        <tr>
+                            <td>#</td>
+                            <td v-for="col in columns" scope="col">{{col}}
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in rows">
+                            <th scope="row">{{row}}
+                            <td class="tirito" v-bind:id="row + col " v-on:click="salvoAim(row + col )"
+                                v-for="col in columns"></td>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <table class="table-bordered table-light">
-            <thead>
-                <tr>
-                    <th>SHIPS ON DUTTY</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="pl in playerHistory">
-                    <td>{{pl.remain}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="col-md-3">
-            <div class="row">
-                <div class="col-md-3 mr-5">
-                    <table class="table-light">
-                        <thead>
-                            <tr>
-                                <th colspan="3">Given Hits</th>
-                            </tr>
-                            <tr>
-                                <th>Turns</th>
-                                <th>Hits(#)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="pl in playerHistory">
-                                <td>{{pl.turn}}</td>
-                                <td>{{pl.hit}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div>
+            <table class="table-bordered table-light">
+                <thead>
+                    <tr>
+                        <th>SHIPS ON DUTTY</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="pl in playerHistory">
+                        <td>{{pl.remain}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row col-md-3">
+            <table class="table-light">
+                <thead>
+                    <tr>
+                        <th colspan="3">TOTAL HITS</th>
+                    </tr>
+                    <tr>
+                        <th>Turn</th>
+                        <th>Hits(#)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="pl in playerHistory">
+                        <td>{{pl.turn}}</td>
+                        <td>{{pl.hit}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
 
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
+    <script src="scripts/jquery.ui.touch-punch.min.js"></script>
+    <script src="js/location.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-</script>
-<script src="https://cdn.jsdelivr.net/npm/gridstack@1.1.1/dist/gridstack.all.js"></script>
-<script src="scripts/jquery.ui.touch-punch.min.js"></script>
-<script src="js/location.js"></script>
+</body>
 
 </html>

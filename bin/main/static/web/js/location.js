@@ -33,6 +33,7 @@ var app = new Vue({
                 app.gridCreation();
                 app.gameHistory();
                 app.opponentGameHistory();
+                app.checkGameState();
             })
         },
         locatePlayer: function () {
@@ -309,8 +310,10 @@ var app = new Vue({
                 };
                 gameHistory.push(playerHistory)
             }
-            gameHistory.sort((b, a) => a.turn - b.turn);
-            app.mainShipsLeft = gameHistory[0].remain
+            if (this.view.salvoes > 1) {
+                gameHistory.sort((b, a) => a.turn - b.turn);
+                app.mainShipsLeft = gameHistory[0].remain
+            }
 
 
             //MISS AND HITS
@@ -363,9 +366,10 @@ var app = new Vue({
                 };
                 oppGameHistory.push(opponentHistory)
             }
-            oppGameHistory.sort((b, a) => a.turn - b.turn);
-            app.oppShipsLeft = oppGameHistory[0].remain
-
+            if (this.view.salvoes > 1) {
+                oppGameHistory.sort((b, a) => a.turn - b.turn);
+                app.oppShipsLeft = oppGameHistory[0].remain
+            }
 
             //MISS AND HITS
             oppGameHistory.forEach(oppHistoryTurn => {
@@ -404,16 +408,14 @@ var app = new Vue({
             app.opponentHistory = oppGameHistory;
         },
         //GAME STATES
-        checkgameState: function () {
+        checkGameState: function () {
             if (app.view.gameState == "WAITING_OPPONENT" || app.view.gameState == "WAITING_OPPONENT_SHIPS" || app.view.gameState == "OPPONENT'S_ATTACKING") {
-                setTimeout(location.reload, 10000)
-                /* } else if (app.view.gameSTate == "YOU_WIN") {
-
-                */
+                setInterval(function () {
+                    window.location.reload(1)
+                }, 10000)
             }
         },
 
     }
 });
 app.findGameView();
-app.checkgameState();

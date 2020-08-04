@@ -12,6 +12,11 @@ body {
 
 }
 
+#accordion {
+    padding: 0;
+    border-radius: 1px;
+}
+
 h1,
 h2,
 h3 {
@@ -21,10 +26,14 @@ h3 {
     color: darkgoldenrod;
 }
 
-.table-dark {
-    opacity: 0.8;
-    padding: 0%;
-    border-radius: 2cm;
+h4 {
+    font-size: 25px;
+    text-align: center;
+    color: cadetblue;
+}
+
+ol {
+    font-size: 15px;
 
 }
 
@@ -38,10 +47,7 @@ h3 {
 }
 
 table td:hover {
-    background-image: url(../Media/teseract.gif);
-    image-orientation: flip;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: lightseagreen;
 
 }
 
@@ -67,7 +73,9 @@ table td:hover {
 
 .CarrierHorizontal {
     background-image: url('carrierhor.png');
-    background-size: contain;
+    background-size: cover;
+
+
 }
 
 .PatrolBoatHorizontal {

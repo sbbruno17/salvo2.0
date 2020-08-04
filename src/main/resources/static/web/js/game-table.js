@@ -9,7 +9,7 @@ var app = new Vue({
     },
     filters: {
         timeSet: function (value) {
-            return moment(value).format("D,MMM YY, k:m a")
+            return moment(value).format("D MMM YYYY - k:m a")
         }
     },
     methods: {
@@ -64,14 +64,15 @@ var app = new Vue({
         createGame: function () {
             $.post("/api/games")
                 .done(function (data) {
-                    window.open("game.html?gp=" + data.gamePlayerId, "_blank");
+                    window.open("game.html?gp=" + data.gpid, "_blank");
+                    console.log(data)
                 })
 
         },
         joinGame: function (gameID) {
             $.post("/api/games/" + gameID + "/player")
                 .done(function (data) {
-                    window.open("game.html?gp=" + data.gpID, "_blank");
+                    window.open("game.html?gp=" + data.gpid, "_blank");
                 })
         },
     }
